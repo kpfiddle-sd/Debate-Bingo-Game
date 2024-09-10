@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debate Bingo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .bingo-card {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .bingo-cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 5px;
+            font-size: 14px;
+        }
+        .bingo-cell.marked {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #new-game {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="bingo-card" id="bingo-card"></div>
+        <button id="new-game">New Game</button>
+    </div>
+
+    <script>
+        const phrases = [
+            "Tax reform", "Healthcare", "Climate change", "Immigration", "Education",
+            "Foreign policy", "Economy", "National security", "Social justice", "Infrastructure",
+            "Gun control", "Jobs", "Minimum wage", "Trade deals", "Renewable energy",
+            "Deficit", "Medicare", "Social Security", "Voting rights", "Criminal justice",
+            "Military spending", "Affordable housing", "Cybersecurity", "Opioid crisis",
+            "Personal attack on opponent", "Uncontrolled laughter", "Mockery of opponent",
+            "Ad hominem argument", "Interruption", "Fact check moment", "Audience reaction",
+            "Dodging the question", "Bringing up past scandal", "Name-calling"
+        ];
+
+        function createBingoCard() {
+            const card = document.getElementById('bingo-card');
+            card.innerHTML = '';
+            const shuffled = phrases.sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 24);
+            selected.splice(12, 0, "FREE SPACE");
+
+            selected.forEach((phrase, index) => {
+                const cell = document.createElement('div');
+                cell.className = 'bingo-cell';
+                cell.textContent = phrase;
+                if (index === 12) {
+                    cell.classList.add('marked');
+                }
+                cell.addEventListener('click', () => {
+                    cell.classList.toggle('marked');
+                    checkWin();
+                });
+                card.appendChild(cell);
+            });
+        }
+
+        function checkWin() {
+            const cells = document.getElementsByClassName('bingo-cell');
+            const winningCombos = [
+                [0,1,2,3,4], [5,6,7,8,9], [10,11,12,13,14], [15,16,17,18,19], [20,21,22,23,24], // rows
+                [0,5,10,15,20], [1,6,11,16,21], [2,7,12,17,22], [3,8,13,18,23], [4,9,14,19,24], // columns
+                [0,6,12,18,24], [4,8,12,16,20] // diagonals
+            ];
+
+            for (let combo of winningCombos) {
+                if (combo.every(index => cells[index].classList.contains('marked'))) {
+                    alert('BINGO! You won!');
+                    return;
+                }
+            }
+        }
+
+        document.getElementById('new-game').addEventListener('click', createBingoCard);
+
+        // Initialize the game
+        createBingoCard();
+    </script>
+</body>
+</html>
